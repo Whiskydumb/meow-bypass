@@ -25,18 +25,18 @@ def check_and_initialize_files(app):
     status = bin_initializer.initialize()
     
     if not status["success"]:
-        msg = "Отсутствуют следующие файлы:\n\n"
+        msg = "Не удалось найти следующие файлы:\n\n"
         
         if status["bin_files"]["missing"]:
-            msg += "Необходимые файлы в папке .meow_bypass/bin:\n- " + "\n- ".join(status["bin_files"]["missing"]) + "\n\n"
+            msg += "Бинарные файлы:\n- " + "\n- ".join(status["bin_files"]["missing"]) + "\n\n"
             
         if status["json_files"]["missing"]:
-            msg += "Конфигурационные файлы в папке .meow_bypass:\n- " + "\n- ".join(status["json_files"]["missing"]) + "\n\n"
+            msg += "JSON файлы:\n- " + "\n- ".join(status["json_files"]["missing"]) + "\n\n"
             
-        msg += "Убедитесь, что все файлы присутствуют в папке .meow_bypass и перезапустите приложение."
+        msg += "Убедитесь, что все файлы находятся в правильных директориях и запустите приложение снова."
         
         error_box = QMessageBox()
-        error_box.setWindowTitle("Ошибка запуска")
+        error_box.setWindowTitle("Ошибка инициализации")
         error_box.setText(msg)
         error_box.setIcon(QMessageBox.Warning)
         error_box.exec_()

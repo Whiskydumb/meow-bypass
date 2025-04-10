@@ -77,4 +77,5 @@ class BinFilesInitializer:
         
         return status
 
+
 bin_initializer = BinFilesInitializer() 
