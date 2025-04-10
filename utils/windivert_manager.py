@@ -128,9 +128,19 @@ class WinDivertManager:
                 "--dpi-desync-autottl=2",
                 "--dpi-desync-fooling=md5sig",
                 "--new",
-                "--filter-l3=ipv4",
                 "--filter-tcp=443",
-                "--dpi-desync=syndata",
+                f"--hostlist={temp_general_domains}",
+                "--dpi-desync=split",
+                "--dpi-desync-split-pos=1",
+                "--dpi-desync-autottl", 
+                "--dpi-desync-fooling=badseq",
+                "--dpi-desync-repeats=8",
+                "--new",
+                "--filter-udp=443",
+                f"--ipset={temp_cloudflare_ips}",
+                "--dpi-desync=fake",
+                "--dpi-desync-repeats=6",
+                f"--dpi-desync-fake-quic={quic_initial_path}",
                 "--new",
                 "--filter-tcp=80",
                 f"--ipset={temp_cloudflare_ips}",
@@ -138,12 +148,13 @@ class WinDivertManager:
                 "--dpi-desync-autottl=2",
                 "--dpi-desync-fooling=md5sig",
                 "--new",
-                "--filter-udp=443",
+                "--filter-tcp=443",
                 f"--ipset={temp_cloudflare_ips}",
-                "--dpi-desync=fake",
-                "--dpi-desync-repeats=6",
-                f"--dpi-desync-fake-quic={quic_initial_path}",
-                "--new"
+                "--dpi-desync=split",
+                "--dpi-desync-split-pos=1",
+                "--dpi-desync-autottl",
+                "--dpi-desync-fooling=badseq",
+                "--dpi-desync-repeats=8"
             ]
             
             self.process = subprocess.Popen(
@@ -164,7 +175,7 @@ class WinDivertManager:
             monitor_thread = threading.Thread(target=self._monitor_process, daemon=True)
             monitor_thread.start()
             
-            return True, "Method 1 (general ALT5) bypass started successfully"
+            return True, "Method 1 bypass started successfully"
             
         except Exception as e:
             return False, f"Error starting method 1: {str(e)}"
@@ -268,7 +279,7 @@ class WinDivertManager:
             monitor_thread = threading.Thread(target=self._monitor_process, daemon=True)
             monitor_thread.start()
             
-            return True, "Method 2 (general МГТС2) bypass started successfully"
+            return True, "Method 2 bypass started successfully"
             
         except Exception as e:
             return False, f"Error starting method 2: {str(e)}"
