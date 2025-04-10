@@ -8,3 +8,7 @@ worker.lock
 .venv/
 scripts/protoc/**
 scripts/googleapis/**
+bin/
+!resources/bin_files.py
+build/
+dist/

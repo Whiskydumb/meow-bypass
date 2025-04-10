@@ -23,7 +23,18 @@ Meow Bypass uses the WinDivert library to intercept and modify network traffic. 
 
 1. Download the executable from the [release page](https://github.com/Whiskydumb/meow-bypass/releases/latest)
 
-2. Run meow.exe as administrator (required for WinDivert operation)
+2. Download the required JSON files from the same release page:
+   - `blocklist-domain.json`
+   - `blocklist-ip.json`
+
+3. Place these JSON files in the `.meow_bypass` folder in your user directory:
+   - Windows: `C:\Users\{username}\.meow_bypass\`
+   
+   Note: These JSON files contain block lists that can be updated by the user.
+
+4. Run meow.exe as administrator (required for WinDivert operation)
+
+The application includes all necessary binary files and will automatically extract them when needed.
 
 ## Usage
 
