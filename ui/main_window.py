@@ -1,6 +1,6 @@
 import os
 from PyQt5.QtWidgets import QWidget, QVBoxLayout, QFrame, QStackedWidget, QSystemTrayIcon, QMenu, QAction, QApplication
-from PyQt5.QtCore import Qt, QPoint
+from PyQt5.QtCore import Qt, QPoint, QEvent
 from PyQt5.QtGui import QFont
 
 from ui.title_bar import CustomTitleBar
@@ -96,12 +96,16 @@ class MainWindow(QWidget):
         """)
         
         self.open_action = QAction(translator.get_translation("open_action"), self)
-        self.open_action.triggered.connect(self.show)
+        self.open_action.triggered.connect(self.show_from_tray)
+        
+        self.settings_action = QAction(translator.get_translation("settings_action"), self)
+        self.settings_action.triggered.connect(self.show_settings_from_tray)
         
         self.exit_action = QAction(translator.get_translation("exit_action"), self)
         self.exit_action.triggered.connect(self.close_application)
         
         self.tray_menu.addAction(self.open_action)
+        self.tray_menu.addAction(self.settings_action)
         self.tray_menu.addSeparator()
         self.tray_menu.addAction(self.exit_action)
         
@@ -110,16 +114,34 @@ class MainWindow(QWidget):
         self.tray_icon.show()
         
     def tray_icon_activated(self, reason):
-        if reason == QSystemTrayIcon.DoubleClick:
-            self.show()
+        # DoubleClick - двойной клик
+        # Trigger - одинарный клик
+        # MiddleClick - клик средней кнопкой мыши
+        if reason == QSystemTrayIcon.DoubleClick or reason == QSystemTrayIcon.Trigger:
+            self.show_from_tray()
+    
+    def show_from_tray(self):
+        self.showNormal()
+        self.activateWindow()
 
     def close_application(self):
         self.tray_icon.hide()
         QApplication.quit()
 
+    def hide_to_tray(self):
+        self.hide()
+    
     def closeEvent(self, event):
         event.ignore()
-        self.hide()
+        self.hide_to_tray()
+        
+    def changeEvent(self, event):
+        if event.type() == QEvent.WindowStateChange:
+            if self.isMinimized():
+                event.ignore()
+                self.hide_to_tray()
+                return
+        super().changeEvent(event)
 
     def mousePressEvent(self, event):
         if event.button() == Qt.LeftButton:
@@ -213,8 +235,9 @@ class MainWindow(QWidget):
     
     def on_language_changed(self, language):
         self.setWindowTitle(translator.get_translation("app_title"))
-        
+
         self.open_action.setText(translator.get_translation("open_action"))
+        self.settings_action.setText(translator.get_translation("settings_action"))
         self.exit_action.setText(translator.get_translation("exit_action"))
         
         self.main_page.update_translations()
@@ -223,4 +246,20 @@ class MainWindow(QWidget):
         print("Play button clicked - functionality to be implemented")
         
     def on_open_folder(self):
-        print("Open folder button clicked - functionality to be implemented") 
+        print("Open folder button clicked - functionality to be implemented")
+
+    def toggle_window_visibility(self):
+        if self.isVisible():
+            self.hide_to_tray()
+        else:
+            self.show_from_tray()
+
+    def keyPressEvent(self, event):
+        if event.key() == Qt.Key_Escape:
+            self.hide_to_tray()
+        else:
+            super().keyPressEvent(event)
+
+    def show_settings_from_tray(self):
+        self.show_from_tray()
+        self.switch_to_settings() 

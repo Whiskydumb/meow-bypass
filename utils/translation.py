@@ -21,6 +21,7 @@ class TranslationManager:
             
             "open_action": "Открыть",
             "exit_action": "Выход",
+            "settings_action": "Настройки",
             
             "play_button": "Запустить",
         },
@@ -41,6 +42,7 @@ class TranslationManager:
             
             "open_action": "Open",
             "exit_action": "Exit",
+            "settings_action": "Settings",
             
             "play_button": "Start",
         },
@@ -61,6 +63,7 @@ class TranslationManager:
             
             "open_action": "Pounce!",
             "exit_action": "Scram!",
+            "settings_action": "Purr-ferences",
             
             "play_button": "NYA-START!",
         }

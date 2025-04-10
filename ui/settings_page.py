@@ -18,14 +18,14 @@ class SettingsPage(QWidget):
         layout.setSpacing(8)
         
         self.settings_header = QLabel(translator.get_translation("settings_title"))
-        self.settings_header.setStyleSheet("color: #8dc1ef; font-size: 14px; font-weight: bold; margin-bottom: 5px;")
+        self.settings_header.setStyleSheet("color: #8dc1ef; font-size: 14px; margin-bottom: 5px;")
         layout.addWidget(self.settings_header)
         
         layout.addWidget(self.create_separator())
         
         method_row = QHBoxLayout()
         self.method_label = QLabel(translator.get_translation("method_label"))
-        self.method_label.setStyleSheet("color: #475766; font-weight: bold; font-size: 12px;")
+        self.method_label.setStyleSheet("color: #475766; font-size: 12px;")
         self.method_label.setFixedWidth(70)
         self.method_combo = QComboBox()
         self.method_combo.addItems([
@@ -41,7 +41,7 @@ class SettingsPage(QWidget):
 
         branch_row = QHBoxLayout()
         self.branch_label = QLabel(translator.get_translation("version_label"))
-        self.branch_label.setStyleSheet("color: #475766; font-weight: bold; font-size: 12px;")
+        self.branch_label.setStyleSheet("color: #475766; font-size: 12px;")
         self.branch_label.setFixedWidth(70)
         self.branch_combo = QComboBox()
         self.branch_combo.addItems([
@@ -57,7 +57,7 @@ class SettingsPage(QWidget):
         
         lang_row = QHBoxLayout()
         self.lang_label = QLabel(translator.get_translation("language_label"))
-        self.lang_label.setStyleSheet("color: #475766; font-weight: bold; font-size: 12px;")
+        self.lang_label.setStyleSheet("color: #475766; font-size: 12px;")
         self.lang_label.setFixedWidth(70)
         self.lang_combo = QComboBox()
         self.lang_combo.addItems(translator.get_languages())

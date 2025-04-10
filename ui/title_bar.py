@@ -58,7 +58,7 @@ class CustomTitleBar(QWidget):
         self.minimize_btn = QToolButton()
         self.minimize_btn.setIcon(self.minimize_icon)
         self.minimize_btn.setIconSize(QSize(16, 16))
-        self.minimize_btn.clicked.connect(self.parent.showMinimized)
+        self.minimize_btn.clicked.connect(self.parent.hide_to_tray)
         layout.addWidget(self.minimize_btn)
         
         self.apply_styles()
