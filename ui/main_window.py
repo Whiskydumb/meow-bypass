@@ -1,5 +1,5 @@
 import os
-from PyQt5.QtWidgets import QWidget, QVBoxLayout, QFrame, QStackedWidget, QSystemTrayIcon, QMenu, QAction, QApplication
+from PyQt5.QtWidgets import QWidget, QVBoxLayout, QFrame, QStackedWidget, QSystemTrayIcon, QMenu, QAction, QApplication, QMessageBox
 from PyQt5.QtCore import Qt, QPoint, QEvent
 from PyQt5.QtGui import QFont
 
@@ -10,6 +10,7 @@ from resources.icons import APP_ICON_SVG
 from utils.resource_utils import svg_to_icon
 from utils.translation import translator
 from utils.config_manager import config_manager
+from utils.windivert_manager import windivert_manager
 
 class MainWindow(QWidget):
     def __init__(self, app_font_family):
@@ -66,6 +67,12 @@ class MainWindow(QWidget):
         
         self.apply_styles()
         
+        if config_manager.get_setting("service_running", False):
+            running, _ = windivert_manager.check_status()
+            if not running:
+                config_manager.update_setting("service_running", False)
+                self.main_page.update_button_state()
+        
     def initialize_from_config(self):
         config = config_manager.load_config()
         
@@ -112,17 +119,68 @@ class MainWindow(QWidget):
         self.settings_action = QAction(translator.get_translation("settings_action"), self)
         self.settings_action.triggered.connect(self.show_settings_from_tray)
         
+        self.toggle_service_action = QAction(translator.get_translation("start_service_action"), self)
+        self.toggle_service_action.triggered.connect(self.toggle_service_from_tray)
+        self.update_toggle_service_action()
+        
         self.exit_action = QAction(translator.get_translation("exit_action"), self)
         self.exit_action.triggered.connect(self.close_application)
         
         self.tray_menu.addAction(self.open_action)
         self.tray_menu.addAction(self.settings_action)
+        self.tray_menu.addAction(self.toggle_service_action)
         self.tray_menu.addSeparator()
         self.tray_menu.addAction(self.exit_action)
         
         self.tray_icon.setContextMenu(self.tray_menu)
         self.tray_icon.activated.connect(self.tray_icon_activated)
         self.tray_icon.show()
+        
+    def update_toggle_service_action(self):
+        if config_manager.get_setting("service_running", False):
+            self.toggle_service_action.setText(translator.get_translation("stop_service_action"))
+        else:
+            self.toggle_service_action.setText(translator.get_translation("start_service_action"))
+        
+    def toggle_service_from_tray(self):
+        if config_manager.get_setting("service_running", False):
+            success, message = windivert_manager.stop_bypass()
+            if success:
+                self.tray_icon.showMessage(
+                    translator.get_translation("app_title"),
+                    translator.get_translation("service_stopped_notification"),
+                    QSystemTrayIcon.Information,
+                    2000
+                )
+            else:
+                self.tray_icon.showMessage(
+                    translator.get_translation("app_title"),
+                    message,
+                    QSystemTrayIcon.Warning,
+                    2000
+                )
+        else:
+            method = config_manager.get_setting("method", "Метод 1")
+            method_number = method.split()[-1]
+            
+            success, message = windivert_manager.start_bypass(method_number)
+            if success:
+                self.tray_icon.showMessage(
+                    translator.get_translation("app_title"),
+                    translator.get_translation("service_started_notification"),
+                    QSystemTrayIcon.Information,
+                    2000
+                )
+            else:
+                self.tray_icon.showMessage(
+                    translator.get_translation("app_title"),
+                    message,
+                    QSystemTrayIcon.Warning,
+                    2000
+                )
+        
+        self.update_toggle_service_action()
+        self.main_page.update_button_state()
         
     def tray_icon_activated(self, reason):
         # DoubleClick - двойной клик
@@ -136,6 +194,9 @@ class MainWindow(QWidget):
         self.activateWindow()
 
     def close_application(self):
+        if config_manager.get_setting("service_running", False):
+            windivert_manager.stop_bypass()
+            
         self.tray_icon.hide()
         QApplication.quit()
 
@@ -242,6 +303,28 @@ class MainWindow(QWidget):
                 border-bottom-left-radius: 15px;
                 border-bottom-right-radius: 15px;
             }}
+            QMessageBox {{
+                background-color: #121418;
+                color: #dbe0e9;
+            }}
+            QMessageBox QLabel {{
+                color: #dbe0e9;
+            }}
+            QMessageBox QPushButton {{
+                background-color: #181c23;
+                color: #dbe0e9;
+                border: 1px solid #252a35;
+                border-radius: 4px;
+                padding: 5px 15px;
+                min-width: 60px;
+            }}
+            QMessageBox QPushButton:hover {{
+                background-color: #252a35;
+            }}
+            QMessageBox QWidget[objectName^="qt_msgbox_"] {{
+                background-color: #121418;
+                color: #dbe0e9;
+            }}
         """)
     
     def on_language_changed(self, language):
@@ -251,11 +334,24 @@ class MainWindow(QWidget):
         self.settings_action.setText(translator.get_translation("settings_action"))
         self.exit_action.setText(translator.get_translation("exit_action"))
         
+        self.update_toggle_service_action()
         self.main_page.update_translations()
         
-    def on_play(self):
-        print("Play button clicked - functionality to be implemented")
+    def on_play(self, success, message, is_running):
+        self.update_toggle_service_action()
         
+        if success:
+            notification_text = translator.get_translation(
+                "service_started_notification" if is_running else "service_stopped_notification"
+            )
+            
+            self.tray_icon.showMessage(
+                translator.get_translation("app_title"),
+                notification_text,
+                QSystemTrayIcon.Information,
+                2000
+            )
+    
     def show_settings_from_tray(self):
         self.switch_to_settings()
         self.show_from_tray()

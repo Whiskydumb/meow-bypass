@@ -24,6 +24,22 @@ class TranslationManager:
             "settings_action": "Настройки",
             
             "play_button": "Запустить",
+            "stop_button": "Остановить",
+            
+            "service_running": "Сервис запущен",
+            "service_stopped": "Сервис не запущен",
+            
+            "admin_required_title": "Требуются права администратора",
+            "admin_required_message": "Для работы WinDivert требуются права администратора. Перезапустить приложение с правами администратора?",
+            "admin_required_status": "Требуются права администратора",
+            "yes_button": "Да",
+            "no_button": "Нет",
+            
+            "start_service_action": "Запустить сервис",
+            "stop_service_action": "Остановить сервис",
+            
+            "service_started_notification": "Обход блокировок успешно запущен",
+            "service_stopped_notification": "Обход блокировок остановлен",
         },
         ENGLISH: {
             "app_title": "meow bypass",
@@ -45,6 +61,22 @@ class TranslationManager:
             "settings_action": "Settings",
             
             "play_button": "Start",
+            "stop_button": "Stop",
+            
+            "service_running": "Service is running",
+            "service_stopped": "Service is not running",
+            
+            "admin_required_title": "Administrator privileges required",
+            "admin_required_message": "WinDivert requires administrator privileges. Restart the application with administrator privileges?",
+            "admin_required_status": "Administrator privileges required",
+            "yes_button": "Yes",
+            "no_button": "No",
+            
+            "start_service_action": "Start service",
+            "stop_service_action": "Stop service",
+            
+            "service_started_notification": "Bypass successfully started",
+            "service_stopped_notification": "Bypass stopped",
         },
         KITTEN: {
             "app_title": "meow bypass",
@@ -66,6 +98,22 @@ class TranslationManager:
             "settings_action": "Purr-ferences",
             
             "play_button": "NYA-START!",
+            "stop_button": "NYA-STOP!",
+            
+            "service_running": "Meowchine purring!",
+            "service_stopped": "Meowchine sleeping...",
+            
+            "admin_required_title": "Need alpha cat powers!",
+            "admin_required_message": "Nyaa~ Need alpha cat powers to use WinDivert! Give me permissions?",
+            "admin_required_status": "Need alpha cat powers!",
+            "yes_button": "Meow-Yes!",
+            "no_button": "Nya-No!",
+            
+            "start_service_action": "Start purring!",
+            "stop_service_action": "Stop purring!",
+            
+            "service_started_notification": "Nya~ Bypass powers activated!",
+            "service_stopped_notification": "Purring stopped, taking a catnap...",
         }
     }
     
