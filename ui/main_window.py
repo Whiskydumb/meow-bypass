@@ -9,6 +9,7 @@ from ui.settings_page import SettingsPage
 from resources.icons import APP_ICON_SVG
 from utils.resource_utils import svg_to_icon
 from utils.translation import translator
+from utils.config_manager import config_manager
 
 class MainWindow(QWidget):
     def __init__(self, app_font_family):
@@ -16,6 +17,9 @@ class MainWindow(QWidget):
         self.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint)
         self.setAttribute(Qt.WA_TranslucentBackground, True)
         self.setFixedSize(250, 250)
+        
+        self.initialize_from_config()
+        
         self.setWindowTitle(translator.get_translation("app_title"))
         
         self.app_font = QFont(app_font_family)
@@ -56,12 +60,19 @@ class MainWindow(QWidget):
         self.title_bar.settings_btn.clicked.connect(self.switch_to_settings)
         
         self.main_page.connect_actions(self.on_play)
-        self.settings_page.connect_actions(self.on_open_folder)
+        self.settings_page.connect_actions(None)
         
         self.create_tray()
         
         self.apply_styles()
         
+    def initialize_from_config(self):
+        config = config_manager.load_config()
+        
+        language = config.get("language", translator.RUSSIAN)
+        if language in translator.get_languages():
+            translator.current_language = language
+            
     def switch_to_home(self):
         self.stacked_widget.setCurrentIndex(0)
         self.title_bar.home_btn.setChecked(True)
@@ -245,21 +256,12 @@ class MainWindow(QWidget):
     def on_play(self):
         print("Play button clicked - functionality to be implemented")
         
-    def on_open_folder(self):
-        print("Open folder button clicked - functionality to be implemented")
-
-    def toggle_window_visibility(self):
-        if self.isVisible():
-            self.hide_to_tray()
-        else:
-            self.show_from_tray()
+    def show_settings_from_tray(self):
+        self.switch_to_settings()
+        self.show_from_tray()
 
     def keyPressEvent(self, event):
         if event.key() == Qt.Key_Escape:
             self.hide_to_tray()
         else:
-            super().keyPressEvent(event)
-
-    def show_settings_from_tray(self):
-        self.show_from_tray()
-        self.switch_to_settings() 
+            super().keyPressEvent(event) 

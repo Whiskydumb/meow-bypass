@@ -5,7 +5,7 @@ class TranslationManager:
     
     _translations = {
         RUSSIAN: {
-            "app_title": "Meow bypass",
+            "app_title": "meow bypass",
             "settings_title": "Настройки приложения",
             
             "method_label": "Метод:",
@@ -26,7 +26,7 @@ class TranslationManager:
             "play_button": "Запустить",
         },
         ENGLISH: {
-            "app_title": "Meow bypass",
+            "app_title": "meow bypass",
             "settings_title": "Application Settings",
             
             "method_label": "Method:",
@@ -47,7 +47,7 @@ class TranslationManager:
             "play_button": "Start",
         },
         KITTEN: {
-            "app_title": "NYA-BYPASS UwU",
+            "app_title": "meow bypass",
             "settings_title": "Purr-ferences Nya~",
             
             "method_label": "Meowthod:",
