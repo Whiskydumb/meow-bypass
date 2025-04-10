@@ -8,6 +8,7 @@ from ui.main_page import MainPage
 from ui.settings_page import SettingsPage
 from resources.icons import APP_ICON_SVG
 from utils.resource_utils import svg_to_icon
+from utils.translation import translator
 
 class MainWindow(QWidget):
     def __init__(self, app_font_family):
@@ -15,7 +16,7 @@ class MainWindow(QWidget):
         self.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint)
         self.setAttribute(Qt.WA_TranslucentBackground, True)
         self.setFixedSize(250, 250)
-        self.setWindowTitle("Meow bypass")
+        self.setWindowTitle(translator.get_translation("app_title"))
         
         self.app_font = QFont(app_font_family)
         self.app_font.setPointSize(9)
@@ -45,6 +46,8 @@ class MainWindow(QWidget):
         
         self.main_page = MainPage()
         self.settings_page = SettingsPage()
+        
+        self.settings_page.languageChanged.connect(self.on_language_changed)
         
         self.stacked_widget.addWidget(self.main_page)
         self.stacked_widget.addWidget(self.settings_page)
@@ -77,8 +80,8 @@ class MainWindow(QWidget):
         self.tray_icon = QSystemTrayIcon(self)
         self.tray_icon.setIcon(self.windowIcon())
         
-        tray_menu = QMenu()
-        tray_menu.setStyleSheet("""
+        self.tray_menu = QMenu()
+        self.tray_menu.setStyleSheet("""
             QMenu {
                 background-color: #121418;
                 color: #dbe0e9;
@@ -92,17 +95,17 @@ class MainWindow(QWidget):
             }
         """)
         
-        open_action = QAction("Открыть", self)
-        open_action.triggered.connect(self.show)
+        self.open_action = QAction(translator.get_translation("open_action"), self)
+        self.open_action.triggered.connect(self.show)
         
-        exit_action = QAction("Выход", self)
-        exit_action.triggered.connect(self.close_application)
+        self.exit_action = QAction(translator.get_translation("exit_action"), self)
+        self.exit_action.triggered.connect(self.close_application)
         
-        tray_menu.addAction(open_action)
-        tray_menu.addSeparator()
-        tray_menu.addAction(exit_action)
+        self.tray_menu.addAction(self.open_action)
+        self.tray_menu.addSeparator()
+        self.tray_menu.addAction(self.exit_action)
         
-        self.tray_icon.setContextMenu(tray_menu)
+        self.tray_icon.setContextMenu(self.tray_menu)
         self.tray_icon.activated.connect(self.tray_icon_activated)
         self.tray_icon.show()
         
@@ -207,6 +210,14 @@ class MainWindow(QWidget):
                 border-bottom-right-radius: 15px;
             }}
         """)
+    
+    def on_language_changed(self, language):
+        self.setWindowTitle(translator.get_translation("app_title"))
+        
+        self.open_action.setText(translator.get_translation("open_action"))
+        self.exit_action.setText(translator.get_translation("exit_action"))
+        
+        self.main_page.update_translations()
         
     def on_play(self):
         print("Play button clicked - functionality to be implemented")

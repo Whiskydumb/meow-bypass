@@ -4,6 +4,7 @@ from PyQt5.QtGui import QColor
 
 from resources.icons import PLAY_ICON_SVG
 from utils.resource_utils import svg_to_icon
+from utils.translation import translator
 
 class MainPage(QWidget):
     def __init__(self, parent=None):
@@ -31,7 +32,7 @@ class MainPage(QWidget):
             }
         """)
         
-        self.play_label = QLabel("Запустить")
+        self.play_label = QLabel(translator.get_translation("play_button"))
         self.play_label.setAlignment(Qt.AlignCenter)
         self.play_label.setStyleSheet("color: #dbe0e9; margin-top: 10px; font-size: 14px;")
         
@@ -41,4 +42,7 @@ class MainPage(QWidget):
         layout.addStretch()
         
     def connect_actions(self, on_play):
-        self.play_btn.clicked.connect(on_play) 
+        self.play_btn.clicked.connect(on_play)
+        
+    def update_translations(self):
+        self.play_label.setText(translator.get_translation("play_button")) 
